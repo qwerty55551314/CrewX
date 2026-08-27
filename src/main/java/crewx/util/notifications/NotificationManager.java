@@ -1,5 +1,7 @@
 package crewx.util.notifications;
 
+import net.minecraft.client.Minecraft;
+
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -64,6 +66,7 @@ public class NotificationManager {
 
     public void updateAndRender() {
         if (notifications.isEmpty()) return;
+        Minecraft.getMinecraft().entityRenderer.setupOverlayRendering();
         renderer.draw(notifications);
     }
 }

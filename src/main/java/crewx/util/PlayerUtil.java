@@ -1,7 +1,7 @@
 package crewx.util;
 
 import crewx.CrewX;
-import crewx.module.modules.KeepSprint;
+import crewx.module.modules.movement.KeepSprint;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.client.Minecraft;

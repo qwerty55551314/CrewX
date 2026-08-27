@@ -1,8 +1,8 @@
 package crewx.mixin;
 
 import crewx.CrewX;
-import crewx.module.modules.AntiObbyTrap;
-import crewx.module.modules.Jesus;
+import crewx.module.modules.misc.AntiObbyTrap;
+import crewx.module.modules.movement.Jesus;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;

@@ -1,8 +1,8 @@
 package crewx.mixin;
 
 import crewx.CrewX;
-import crewx.module.modules.AntiObfuscate;
-import crewx.module.modules.NickHider;
+import crewx.module.modules.misc.AntiObfuscate;
+import crewx.module.modules.misc.NickHider;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

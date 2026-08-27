@@ -1,8 +1,8 @@
 package crewx.mixin;
 
 import crewx.CrewX;
-import crewx.module.modules.AutoBlockIn;
-import crewx.module.modules.Scaffold;
+import crewx.module.modules.player.AutoBlockIn;
+import crewx.module.modules.player.Scaffold;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;

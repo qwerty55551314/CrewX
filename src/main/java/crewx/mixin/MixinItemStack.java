@@ -1,7 +1,7 @@
 package crewx.mixin;
 
 import crewx.CrewX;
-import crewx.module.modules.ESP;
+import crewx.module.modules.render.ESP;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

@@ -1,7 +1,7 @@
 package crewx.mixin;
 
 import crewx.CrewX;
-import crewx.module.modules.Cape;
+import crewx.module.modules.render.Cape;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.util.ResourceLocation;

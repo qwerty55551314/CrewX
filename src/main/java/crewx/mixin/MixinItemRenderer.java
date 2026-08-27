@@ -1,8 +1,8 @@
 package crewx.mixin;
 
 import crewx.CrewX;
-import crewx.module.modules.Animations;
-import crewx.module.modules.KillAura;
+import crewx.module.modules.render.Animations;
+import crewx.module.modules.combat.KillAura;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.entity.EntityPlayerSP;

@@ -1,7 +1,7 @@
 package crewx.mixin;
 
 import crewx.CrewX;
-import crewx.module.modules.Xray;
+import crewx.module.modules.render.Xray;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;

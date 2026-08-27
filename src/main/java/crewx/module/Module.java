@@ -1,7 +1,9 @@
 package crewx.module;
 
 import crewx.CrewX;
-import crewx.module.modules.HUD;
+import crewx.module.modules.render.HUD;
+import crewx.module.modules.render.GuiModule;
+import crewx.module.modules.render.Notifications;
 import crewx.util.KeyBindUtil;
 import crewx.util.SoundUtil;
 
@@ -27,6 +29,10 @@ public abstract class Module {
 
     public String getName() {
         return this.name;
+    }
+
+    public ModuleCategory getCategory() {
+        return ModuleCategory.fromPackage(this.getClass().getPackage().getName());
     }
 
     public String formatModule() {
@@ -55,8 +61,8 @@ public abstract class Module {
                 this.onDisabled();
             }
             try {
-                    if (!(this instanceof crewx.module.modules.Notifications) && !(this instanceof crewx.module.modules.GuiModule)) {
-                    crewx.module.modules.Notifications.push(this.name, "", enabled);
+                if (!(this instanceof Notifications) && !(this instanceof GuiModule)) {
+                    Notifications.push(this.name, "", enabled);
                 }
             } catch (Throwable ignored) {}
         }

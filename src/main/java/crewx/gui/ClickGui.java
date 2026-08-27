@@ -3,7 +3,9 @@ package crewx.gui;
 import crewx.CrewX;
 import crewx.clickgui.render.RoundedUtils;
 import crewx.module.Module;
-import crewx.module.modules.GuiModule;
+import crewx.module.ModuleCategory;
+
+import crewx.module.modules.render.GuiModule;
 import crewx.property.Property;
 import crewx.property.properties.*;
 import crewx.util.KeyBindUtil;
@@ -64,7 +66,7 @@ public class ClickGui extends GuiScreen {
     private static final float ROW_ROUND = 4.0f;
     private static final float SMALL_ROUND = 3.0f;
     private static final float DRAG_THRESHOLD = 4.0f;
-    private static final String[] CATEGORIES = {"Combat", "Movement", "Render", "Player", "Misc", "Script"};
+    private static final ModuleCategory[] CATEGORIES = ModuleCategory.values();
     private static Field modesField;
     private static final float OPEN_SPEED = 6.8f;
     private static final float CLOSE_SPEED = 9.5f;
@@ -89,7 +91,7 @@ public class ClickGui extends GuiScreen {
                     x = 20;
                     y += 50;
                 }
-                panels.add(new CategoryPanel(i, x, y));
+                panels.add(new CategoryPanel(CATEGORIES[i], x, y));
                 x += PANEL_WIDTH + PANEL_SPACING;
             }
         }
@@ -412,12 +414,8 @@ public class ClickGui extends GuiScreen {
         return result;
     }
 
-    private List<Module> getModules(int category) {
-        List<Module> list = new ArrayList<Module>();
-        for (Module module : CrewX.moduleManager.modules.values()) {
-            if (CrewX.getCategoryForModule(module) == category) list.add(module);
-        }
-        return list;
+    private List<Module> getModules(ModuleCategory category) {
+        return CrewX.moduleManager.getModules(category);
     }
 
     private List<Property<?>> getProperties(Module module) {
@@ -464,7 +462,7 @@ public class ClickGui extends GuiScreen {
     }
 
     private class CategoryPanel {
-        private final int category;
+        private final ModuleCategory category;
         private int x, y;
         private boolean dragPanel = false;
         private int dragX, dragY;
@@ -477,7 +475,7 @@ public class ClickGui extends GuiScreen {
 
         private final List<ModuleButton> modules = new ArrayList<ModuleButton>();
 
-        CategoryPanel(int category, int x, int y) {
+        CategoryPanel(ModuleCategory category, int x, int y) {
             this.category = category;
             this.x = x;
             this.y = y;
@@ -535,7 +533,7 @@ public class ClickGui extends GuiScreen {
                     PANEL_ROUND, PANEL_ROUND, 0.0f, 0.0f);
             round(x + 5, y + HEADER_HEIGHT - 1.5f, PANEL_WIDTH - 10, 1.5f,
                     withAlpha(accentColor().getRGB(), 0.85f), 0.75f);
-            String title = CATEGORIES[category];
+            String title = category.getDisplayName();
             int titleWidth = mc.fontRendererObj.getStringWidth(title);
             text(title, x + (PANEL_WIDTH - titleWidth) / 2.0f, y + 5, 0xFFFFFFFF);
             if (bodyHeight > 0) {

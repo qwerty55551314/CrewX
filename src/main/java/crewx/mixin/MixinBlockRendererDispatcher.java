@@ -1,8 +1,8 @@
 package crewx.mixin;
 
 import crewx.CrewX;
-import crewx.module.modules.BedESP;
-import crewx.module.modules.Xray;
+import crewx.module.modules.render.BedESP;
+import crewx.module.modules.render.Xray;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockBed;
 import net.minecraft.block.BlockBed.EnumPartType;

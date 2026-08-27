@@ -5,7 +5,7 @@ import crewx.init.Initializer;
 import crewx.event.EventManager;
 import crewx.event.types.EventType;
 import crewx.events.*;
-import crewx.module.modules.NoHitDelay;
+import crewx.module.modules.combat.NoHitDelay;
 import crewx.gui.CrewXTransition;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;

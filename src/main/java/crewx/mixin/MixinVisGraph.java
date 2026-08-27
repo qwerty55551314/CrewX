@@ -1,9 +1,9 @@
 package crewx.mixin;
 
 import crewx.CrewX;
-import crewx.module.modules.Chams;
-import crewx.module.modules.ViewClip;
-import crewx.module.modules.Xray;
+import crewx.module.modules.render.Chams;
+import crewx.module.modules.render.ViewClip;
+import crewx.module.modules.render.Xray;
 import net.minecraft.client.renderer.chunk.SetVisibility;
 import net.minecraft.client.renderer.chunk.VisGraph;
 import net.minecraftforge.fml.relauncher.Side;

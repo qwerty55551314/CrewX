@@ -10,7 +10,11 @@ import crewx.event.EventManager;
 import crewx.management.*;
 import crewx.module.Module;
 import crewx.module.ModuleManager;
-import crewx.module.modules.*;
+import crewx.module.modules.combat.*;
+import crewx.module.modules.movement.*;
+import crewx.module.modules.render.*;
+import crewx.module.modules.player.*;
+import crewx.module.modules.misc.*;
 import crewx.property.Property;
 import crewx.property.PropertyManager;
 
@@ -207,110 +211,17 @@ public class CrewX {
         try (InputStreamReader reader = new InputStreamReader(Objects.requireNonNull(CrewX.class.getResourceAsStream("/version.json")), StandardCharsets.UTF_8)) {
             JsonObject modInfo = new JsonParser().parse(reader).getAsJsonObject();
             version = modInfo.get("version").getAsString();
-        } catch (Exception e) {
+                } catch (Exception e) {
             version = "dev";
         }
 
         AccountManager.init();
     }
 
+
     public static int getCategoryForModule(Module module) {
-        if (module instanceof crewx.module.modules.AimAssist ||
-            module instanceof crewx.module.modules.Backtrack ||
-            module instanceof crewx.module.modules.Fakelag ||
-            module instanceof crewx.module.modules.AutoClicker ||
-            module instanceof crewx.module.modules.KillAura ||
-            module instanceof crewx.module.modules.Wtap ||
-            module instanceof crewx.module.modules.Velocity ||
-            module instanceof crewx.module.modules.Freeze ||
-            module instanceof crewx.module.modules.Reach ||
-            module instanceof crewx.module.modules.TargetStrafe ||
-            module instanceof crewx.module.modules.NoHitDelay ||
-            module instanceof crewx.module.modules.AntiFireball ||
-            module instanceof crewx.module.modules.LagRange ||
-            module instanceof crewx.module.modules.HitBox ||
-            module instanceof crewx.module.modules.MoreKB ||
-            module instanceof crewx.module.modules.HitSelect ||
-            module instanceof crewx.module.modules.Piercing ||
-            module instanceof crewx.module.modules.BlockHit ||
-            module instanceof crewx.module.modules.Displace ||
-            module instanceof crewx.module.modules.KnockbackDelay ||
-            module instanceof crewx.module.modules.SprintReset ||
-            module instanceof crewx.module.modules.Criticals ||
-            module instanceof crewx.module.modules.BowAimbot ||
-            module instanceof crewx.module.modules.TickBase) {
-            return 0;
-        }
-        if (module instanceof crewx.module.modules.AntiAFK ||
-            module instanceof crewx.module.modules.Fly ||
-            module instanceof crewx.module.modules.Speed ||
-            module instanceof crewx.module.modules.LongJump ||
-            module instanceof crewx.module.modules.Sprint ||
-            module instanceof crewx.module.modules.SafeWalk ||
-            module instanceof crewx.module.modules.Jesus ||
-            module instanceof crewx.module.modules.Blink ||
-            module instanceof crewx.module.modules.NoFall ||
-            module instanceof crewx.module.modules.NoSlow ||
-            module instanceof crewx.module.modules.KeepSprint ||
-            module instanceof crewx.module.modules.BridgeAssist ||
-            module instanceof crewx.module.modules.NoJumpDelay ||
-            module instanceof crewx.module.modules.AntiVoid) {
-            return 1;
-        }
-        if (module instanceof crewx.module.modules.ESP ||
-            module instanceof crewx.module.modules.Chams ||
-            module instanceof crewx.module.modules.FullBright ||
-            module instanceof crewx.module.modules.Tracers ||
-            module instanceof crewx.module.modules.NameTags ||
-            module instanceof crewx.module.modules.Xray ||
-            module instanceof crewx.module.modules.TargetHUD ||
-            module instanceof crewx.module.modules.Indicators ||
-            module instanceof crewx.module.modules.BedESP ||
-            module instanceof crewx.module.modules.ItemESP ||
-            module instanceof crewx.module.modules.ViewClip ||
-            module instanceof crewx.module.modules.NoHurtCam ||
-            module instanceof crewx.module.modules.HUD ||
-            module instanceof crewx.module.modules.GuiModule ||
-            module instanceof crewx.module.modules.ChestESP ||
-            module instanceof crewx.module.modules.Trajectories ||
-            module instanceof crewx.module.modules.Radar ||
-            module instanceof crewx.module.modules.DynamicIsland ||
-            module instanceof crewx.module.modules.Notifications ||
-            module instanceof crewx.module.modules.Cape ||
-            module instanceof crewx.module.modules.Animations ||
-            false) {
-            return 2;
-        }
-        if (module instanceof crewx.module.modules.AutoHeal ||
-            module instanceof crewx.module.modules.AutoTool ||
-            module instanceof crewx.module.modules.ChestStealer ||
-            module instanceof crewx.module.modules.InvManager ||
-            module instanceof crewx.module.modules.InvWalk ||
-            module instanceof crewx.module.modules.Scaffold ||
-            module instanceof crewx.module.modules.AutoBlockIn ||
-            module instanceof crewx.module.modules.SpeedMine ||
-            module instanceof crewx.module.modules.FastPlace ||
-            module instanceof crewx.module.modules.GhostHand ||
-            module instanceof crewx.module.modules.MCF ||
-            module instanceof crewx.module.modules.AntiDebuff ||
-            module instanceof crewx.module.modules.AutoRecraft ||
-            module instanceof crewx.module.modules.AutoRefill ||
-            module instanceof crewx.module.modules.AutoSoup ||
-            module instanceof crewx.module.modules.AutoHeadHitter ||
-            module instanceof crewx.module.modules.BedDefender ||
-            module instanceof crewx.module.modules.AutoChest ||
-            module instanceof crewx.module.modules.AutoPot ||
-            module instanceof crewx.module.modules.ThrowPot ||
-            module instanceof crewx.module.modules.RemoteShop ||
-            module instanceof crewx.module.modules.AutoRegister) {
-            return 3;
-        }
-        if (module instanceof crewx.module.modules.Overlay) {
-            return 4;
-        }
-        if (module instanceof crewx.script.ScriptModule) {
-            return 5;
-        }
-        return 4;
+        return moduleManager == null || module == null
+                ? crewx.module.ModuleCategory.MISC.ordinal()
+                : moduleManager.getCategory(module).ordinal();
     }
 }

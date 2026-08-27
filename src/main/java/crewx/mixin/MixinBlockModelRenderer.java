@@ -1,7 +1,7 @@
 package crewx.mixin;
 
 import crewx.CrewX;
-import crewx.module.modules.Xray;
+import crewx.module.modules.render.Xray;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.BlockModelRenderer;

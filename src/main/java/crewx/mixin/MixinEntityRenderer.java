@@ -7,7 +7,11 @@ import crewx.events.PickEvent;
 import crewx.events.RaytraceEvent;
 import crewx.events.Render3DEvent;
 import crewx.gui.CrewXTransition;
-import crewx.module.modules.*;
+import crewx.module.modules.combat.*;
+import crewx.module.modules.movement.*;
+import crewx.module.modules.render.*;
+import crewx.module.modules.player.*;
+import crewx.module.modules.misc.*;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.Minecraft;
@@ -101,13 +105,13 @@ public abstract class MixinEntityRenderer {
             ((IAccessorEntityPlayer) this.mc.thePlayer).setItemInUse(this.using.value);
             this.using = null;
         }
-        if (this.useCount != null) {
+                if (this.useCount != null) {
             ((IAccessorEntityPlayer) this.mc.thePlayer).setItemInUseCount(this.useCount.value);
             this.useCount = null;
         }
     }
-
     @Inject(
+
             method = {"updateRenderer"},
             at = {@At("HEAD")}
     )

@@ -3,7 +3,7 @@ package crewx.mixin;
 import crewx.CrewX;
 import crewx.event.EventManager;
 import crewx.events.Render2DEvent;
-import crewx.module.modules.NickHider;
+import crewx.module.modules.misc.NickHider;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.fml.relauncher.Side;

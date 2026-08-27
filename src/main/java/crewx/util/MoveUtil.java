@@ -2,7 +2,7 @@ package crewx.util;
 
 import crewx.CrewX;
 import crewx.management.RotationState;
-import crewx.module.modules.TargetStrafe;
+import crewx.module.modules.combat.TargetStrafe;
 import net.minecraft.client.Minecraft;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.BlockPos;

@@ -1,7 +1,7 @@
 package crewx.mixin;
 
 import crewx.CrewX;
-import crewx.module.modules.Sprint;
+import crewx.module.modules.movement.Sprint;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.relauncher.Side;
