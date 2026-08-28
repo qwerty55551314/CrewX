@@ -17,6 +17,7 @@ import crewx.module.modules.player.*;
 import crewx.module.modules.misc.*;
 import crewx.property.Property;
 import crewx.property.PropertyManager;
+import crewx.util.DiscordRPC;
 
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
@@ -39,6 +40,7 @@ public class CrewX {
     public static crewx.script.ScriptManager scriptManager;
     public static ModuleManager moduleManager;
     public static CommandManager commandManager;
+    public static DiscordRPC discordRPC;
 
     public CrewX() {
         this.init();
@@ -63,9 +65,11 @@ public class CrewX {
         EventManager.register(lagManager);
         EventManager.register(moduleManager);
         EventManager.register(commandManager);
+        discordRPC = new DiscordRPC();
         moduleManager.modules.put(AimAssist.class, new AimAssist());
         moduleManager.modules.put(Backtrack.class, new Backtrack());
         moduleManager.modules.put(Overlay.class, new Overlay());
+        moduleManager.modules.put(DiscordRPC.class, discordRPC);
         moduleManager.modules.put(Fakelag.class, new Fakelag());
         moduleManager.modules.put(AntiAFK.class, new AntiAFK());
         moduleManager.modules.put(AntiDebuff.class, new AntiDebuff());
@@ -200,13 +204,19 @@ public class CrewX {
         if (config.file.exists()) {
             config.load();
         }
+        if (discordRPC.isEnabled()) {
+            discordRPC.start();
+        }
         if (friendManager.file.exists()) {
             friendManager.load();
         }
         if (targetManager.file.exists()) {
             targetManager.load();
         }
-        Runtime.getRuntime().addShutdownHook(new Thread(config::save));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            config.save();
+            if (discordRPC != null) discordRPC.shutdown();
+        }));
 
         try (InputStreamReader reader = new InputStreamReader(Objects.requireNonNull(CrewX.class.getResourceAsStream("/version.json")), StandardCharsets.UTF_8)) {
             JsonObject modInfo = new JsonParser().parse(reader).getAsJsonObject();
