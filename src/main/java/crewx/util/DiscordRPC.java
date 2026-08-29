@@ -12,6 +12,8 @@ import net.arikia.dev.drpc.callbacks.ReadyCallback;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public final class DiscordRPC extends Module {
@@ -126,9 +128,9 @@ public final class DiscordRPC extends Module {
         try {
             DiscordRichPresence.Builder builder = new DiscordRichPresence.Builder(sanitize(this.buildState(server), "Singleplayer"));
             builder.setBigImage(LARGE_IMAGE_KEY, "CrewX");
-            String smallImageKey = this.getSmallImageKey(server);
-            if (smallImageKey != null) {
-                builder.setSmallImage(smallImageKey, server);
+            String serverIconUrl = this.getServerIconUrl(data, server);
+            if (serverIconUrl != null) {
+                builder.setSmallImage(serverIconUrl, server);
             }
             builder.setDetails("Playing CrewX");
             builder.setStartTimestamps(this.created);
@@ -137,13 +139,14 @@ public final class DiscordRPC extends Module {
         }
     }
 
-    private String getSmallImageKey(String server) {
-        String normalized = server == null ? "" : server.toLowerCase(java.util.Locale.ROOT);
-        if (normalized.contains("mush")) return "mush";
-        if (normalized.contains("hypixel")) return "hypixel";
-        if (normalized.contains("hylex")) return "hylex";
-        if (normalized.contains("kaizen")) return "kaizen";
-        return null;
+    private String getServerIconUrl(ServerData data, String server) {
+        if (data == null || server == null || server.isEmpty()) return null;
+        try {
+            return "https://api.mcstatus.io/v2/icon/"
+                    + URLEncoder.encode(server, StandardCharsets.UTF_8.name());
+        } catch (Exception ignored) {
+            return null;
+        }
     }
 
     private String buildState(String server) {
@@ -157,7 +160,7 @@ public final class DiscordRPC extends Module {
             }
         }
         String moduleSummary = active + "/" + total + " modules";
-        return moduleSummary + " | " + sanitize(server, "Singleplayer");
+        return moduleSummary;
     }
 
     private static String sanitize(String value, String fallback) {
