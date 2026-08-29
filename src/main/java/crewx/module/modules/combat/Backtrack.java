@@ -26,17 +26,10 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.INetHandlerPlayClient;
-import net.minecraft.network.play.server.S00PacketKeepAlive;
-import net.minecraft.network.play.server.S02PacketChat;
-import net.minecraft.network.play.server.S06PacketUpdateHealth;
 import net.minecraft.network.play.server.S08PacketPlayerPosLook;
-import net.minecraft.network.play.server.S0CPacketSpawnPlayer;
-import net.minecraft.network.play.server.S0FPacketSpawnMob;
 import net.minecraft.network.play.server.S13PacketDestroyEntities;
 import net.minecraft.network.play.server.S14PacketEntity;
 import net.minecraft.network.play.server.S18PacketEntityTeleport;
-import net.minecraft.network.play.server.S29PacketSoundEffect;
-import net.minecraft.network.status.server.S01PacketPong;
 import net.minecraft.util.AxisAlignedBB;
 import org.lwjgl.input.Keyboard;
 
@@ -80,6 +73,7 @@ public class Backtrack extends Module {
 
     @EventTarget(Priority.HIGHEST)
     public void onAttack(AttackEvent event) {
+        if (!isEnabled()) return;
         Entity attacked = event.getTarget();
         if (attacked instanceof EntityLivingBase && attacked != mc.thePlayer) {
             EntityLivingBase living = (EntityLivingBase) attacked;
@@ -93,12 +87,14 @@ public class Backtrack extends Module {
     @EventTarget(Priority.MEDIUM)
     public void onLoadWorld(LoadWorldEvent event) {
         target = null;
-        flushPackets();
+        // Packets from the previous world must never be replayed into the new one.
+        packets.clear();
+        posCache.clear();
     }
 
     @EventTarget(Priority.HIGHEST)
     public void onTick(TickEvent event) {
-        if (event.getType() != EventType.PRE) return;
+        if (!isEnabled() || event.getType() != EventType.PRE) return;
         if (mc.thePlayer == null || mc.theWorld == null || mc.getNetHandler() == null) return;
 
         long currentTime = System.currentTimeMillis();
@@ -129,7 +125,7 @@ public class Backtrack extends Module {
 
     @EventTarget(Priority.MEDIUM)
     public void onRender3D(Render3DEvent event) {
-        if (target == null || !lineBox.getValue() && !filledBox.getValue()) return;
+        if (!isEnabled() || target == null || !lineBox.getValue() && !filledBox.getValue()) return;
         PosData position = posCache.get(target);
         if (position == null || mc.thePlayer == null) return;
 
@@ -161,16 +157,9 @@ public class Backtrack extends Module {
 
     @EventTarget(Priority.HIGH)
     public void onReceivePacket(PacketEvent event) {
-        if (event.getType() != EventType.RECEIVE || target == null) return;
+        if (!isEnabled() || event.getType() != EventType.RECEIVE || target == null) return;
 
         Packet<?> packet = event.getPacket();
-        if (!packet.getClass().getSimpleName().startsWith("S")) return;
-        if (packet instanceof S00PacketKeepAlive && !cancelKeepAlive.getValue()) return;
-        if (packet instanceof S02PacketChat || packet instanceof S29PacketSoundEffect
-                || packet instanceof S06PacketUpdateHealth) return;
-        if (packet instanceof S01PacketPong && !cancelPong.getValue()) return;
-        if (packet instanceof S0CPacketSpawnPlayer || packet instanceof S0FPacketSpawnMob) return;
-
         if (packet instanceof S08PacketPlayerPosLook) {
             target = null;
             flushPackets();
@@ -180,7 +169,7 @@ public class Backtrack extends Module {
         if (packet instanceof S13PacketDestroyEntities) {
             S13PacketDestroyEntities destroy = (S13PacketDestroyEntities) packet;
             for (int entityId : destroy.getEntityIDs()) {
-                if (target != null && entityId == target.getEntityId()) {
+                if (entityId == target.getEntityId()) {
                     target = null;
                     flushPackets();
                     return;
@@ -189,12 +178,20 @@ public class Backtrack extends Module {
             return;
         }
 
+        // Backtrack must not hold chat, metadata, equipment, animations, health,
+        // spawn or destroy packets. Delaying those packets can make a player
+        // disappear until the world renderer is rebuilt.
+        if (!(packet instanceof S14PacketEntity) && !(packet instanceof S18PacketEntityTeleport)) return;
+
         if (packet instanceof S14PacketEntity) {
-            updateRelativePosition((S14PacketEntity) packet);
+            S14PacketEntity movement = (S14PacketEntity) packet;
+            if (movement.getEntity(mc.theWorld) != target) return;
+            updateRelativePosition(movement);
             if (packet instanceof S14PacketEntity.S16PacketEntityLook) return;
         }
 
         if (packet instanceof S18PacketEntityTeleport) {
+            if (mc.theWorld.getEntityByID(((S18PacketEntityTeleport) packet).getEntityId()) != target) return;
             updateTeleportPosition((S18PacketEntityTeleport) packet);
         }
 
